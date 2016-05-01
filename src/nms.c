@@ -44,7 +44,18 @@ char getMaskChar(void);
  * void nms_exec(NmsArgs *)
  *
  * DESCR:
- * Coming Soon...
+ * Performs "decryption" effect, Returns the character pressed at the last pause, or
+ * '\0' (null character) if there are any problems.
+ *
+ * ARGS:
+ * NmsArgs *args - Pointer to argument structure
+ *
+ *      STRUCTURE MEMBERS:
+ *      args.src - Pointer to string on which to perform the effect
+ *      args.return_opts - Pointer to string containing character options for menu
+ *      args.input_cursor_x - X screen coordinate to place cursor after "decryption"
+ *      args.input_cursor_y - Y screen coordinate to place cursor after "decryption"
+ *      args.show_cursor - 'true' to display cursor, 'false' to hide cursor.
  *
  */
 char nms_exec(NmsArgs *args) {
@@ -54,9 +65,15 @@ char nms_exec(NmsArgs *args) {
 	int termSizeRows, termSizeCols;
 	int c, n, x = 0, y = 0;
 	int r_time, r_time_l, r_time_s;
-	int ms, ls;
 	bool first = true;
 	char ret = 0;
+
+	// Lets check args.src and make sure we have text. If not, return
+	// with an error message.
+	if (args->src == NULL) {
+		fprintf(stderr, "Error. No data found in args.src\n");
+		return 0;
+	}
 
 	// Start and initialize curses mode
 	initscr();
@@ -256,7 +273,7 @@ char nms_exec(NmsArgs *args) {
 }
 
 /*
- * void getMaskChar(void)
+ * char getMaskChar(void)
  *
  * DESCR:
  * Returns a random character from the maskChars string. 
